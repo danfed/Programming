@@ -1,0 +1,75 @@
+#declare buffer for building attribute value
+#declare globals
+dim tmp(2)
+dim addr(6)
+dim result
+dim port
+dim data
+dim value
+dim switch
+
+#Purely event based programming i.e. no main
+# Boot event listener
+event system_boot(major,minor,patch,build,ll_version,protocol_version,hw)
+
+   # Get local BT address
+   call system_address_get( )(addr(0:6))
+
+   # Write BT address to DI service serial number string
+   # attributes_write(handle, offset, value_len, value_data)(result)
+   call attributes_write(xgatt_dis_2a25,0,6,addr(0:5))
+
+   # Initialize the attribute to value of 0
+   call attributes_write(xgatt_dls_2a37,0,2,0)
+
+   # Start advertising in connectable mode
+   call sm_set_bondable_mode(1)
+   call gap_set_mode(gap_general_discoverable,gap_undirected_connectable)
+ 
+   # Set timer to generate event every 1s
+   call hardware_set_soft_timer(32768, 1, 0)
+ 
+   # Configure P0.6 as output
+   call hardware_io_port_config_direction(0, 64)
+    
+   # Set P0.6 pin to low
+   call hardware_io_port_write(0, 64, 0)
+
+end
+ 
+ 
+# Timer event listener
+event hardware_soft_timer(handle)
+   # Read the current state of P0.6 and P0.7
+   call hardware_io_port_read(0, 64)(result, port, data)
+   call hardware_io_port_read(0, 128)(result, port, switch)
+
+ 
+   if  switch & 128 then
+
+      # Write the attribute to high
+      call attributes_write(xgatt_dls_2a37,0,2,1)
+      call sm_set_bondable_mode(1)
+      call gap_set_mode(gap_general_discoverable,gap_undirected_connectable)
+
+      if data & 64 then
+         # pin was set to high, set it to low to disable LED
+         call hardware_io_port_write(0, 64, 0)
+      else
+         # pin was set to low, set it to high to enable LED
+         call hardware_io_port_write(0, 64, 64)
+      end if       
+
+   else
+
+       # When the swtich is not pressed, stop flashing the LED
+       call hardware_io_port_write(0, 64, 0)
+
+   end if
+
+end
+
+event connection_disconnected(handle,result2)
+    # Start advertising again after disconnection
+    call gap_set_mode(gap_general_discoverable,gap_undirected_connectable)
+end
