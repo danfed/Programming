@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project>
+	<gatt in="gatt2.xml" />
+	<hardware in="hardware2.xml" />
+	<script in="doorLock2.bgs" />
+	<image out="BLE112_2.hex" />
+	<device type="ble112" />
+	<boot fw="bootuart" />
+</project>
