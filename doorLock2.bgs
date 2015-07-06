@@ -44,7 +44,7 @@ event hardware_soft_timer(handle)
    call hardware_io_port_read(0, 64)(result, port, data)
    call hardware_io_port_read(0, 128)(result, port, switch)
 
- 
+ #If switch is pressed change attribute value.
    if  switch & 128 then
 
       # Write the attribute to high
