@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration>
+
+    <service uuid="1800">
+      <description>Generic Access Profile</description>
+
+      <characteristic uuid="2a00">
+        <description> Device Name</description>
+        <properties read="true" const="true" />
+        <value>Door Lock Sensor</value>
+      </characteristic>
+
+      <description> Gap Appearance</description>
+      <characteristic uuid="2a01">
+        <properties read="true" const="true" />
+        <value type="hex">0832</value>
+      </characteristic>
+	  
+    </service>
+
+    <service uuid="180A" >
+    <description> Device Information</description>
+        <characteristic uuid="2A29">
+          <description> Manufacturer Name</description>
+            <properties read="true" const="true" />
+            <value>ENPH479</value>
+        </characteristic>
+    
+        <characteristic uuid="2A24">
+            <properties read="true" const="true" />
+            <value>BLE112</value>
+        </characteristic>
+    
+    <characteristic uuid="2A25" id="xgatt_dis_2a25" >
+      <properties read="true" />
+            <value type="hex" length="6" />
+        </characteristic> 
+    
+    </service>
+
+    <service uuid="a8e2c77b-a4c8-4a9a-9395-5e5d963bcaea" advertise="true">
+  
+       <description>Door Lock Sensor</description>
+
+      <characteristic uuid="5b82dfae-f1c9-41e1-9851-f2f3fd8ff4cf" id="xgatt_dls_2a37">
+          <properties read="true" write="true" notify="true" />
+          <value length="2" />
+      </characteristic>
+    
+    </service>
+
+</configuration>
